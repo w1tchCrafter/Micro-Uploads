@@ -1,0 +1,17 @@
+#http server configuration
+[http]
+addr = ":8080"
+
+#database configuration
+[database]
+path = "./micro_uploads.db"
+
+#uploads path
+[uploads]
+path = "./uploads"
+
+#session secret key
+[secret]
+# random value
+# change this in production
+key = "6b1ef95483e977aba755c4b6d0e300ac70b87ab50aca30498ee61c440f6d953c"
