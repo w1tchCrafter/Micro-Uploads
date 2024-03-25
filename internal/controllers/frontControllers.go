@@ -12,26 +12,21 @@ func NewFrontControllers(r *gin.Engine) FrontControllers {
 }
 
 func (fc *FrontControllers) StartRoutes() {
-	fc.R.GET("/", fc.index)
+	fc.R.GET("/", middleware.GetUsername(), fc.index)
 	fc.R.GET("/user", middleware.GetUsername(), fc.user)
 }
 
+func (fc FrontControllers) isLogged(username string) bool {
+	return username != ""
+}
+
 func (fc FrontControllers) index(ctx *gin.Context) {
-	// _, ok := ctx.Get("username")
-	// var logged bool
+	username := ctx.GetString("username")
+	logged := fc.isLogged(username)
 
-	// if ok {
-	// 	logged = true
-	// } else {
-	// 	logged = false
-	// 	ctx.String(http.StatusInternalServerError, "error")
-	// 	return
-	// }
-
-	// fix the above shit later
 	ctx.HTML(http.StatusOK, "index", gin.H{
 		"title":  "micro uploads",
-		"logged": false,
+		"logged": logged,
 	})
 }
 

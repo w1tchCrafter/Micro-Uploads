@@ -8,9 +8,13 @@ import (
 func GetUsername() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		session := sessions.Default(ctx)
-		username := session.Get("username").(string)
 
-		ctx.Set("username", username)
+		if username, ok := session.Get("username").(string); ok {
+			ctx.Set("username", username)
+		} else {
+			ctx.Set("username", "")
+		}
+
 		ctx.Next()
 	}
 }
