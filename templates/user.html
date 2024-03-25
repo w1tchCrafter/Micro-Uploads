@@ -2,48 +2,41 @@
 
 {{ define "title" }}<title>{{ .title }}</title>{{ end }}
 {{ define "style" }}
-    <style>
-        .file-links {
-            left: 30%;
-            top: 20%;
-            position: absolute;
-        }
-
-        .file-links ul {
-            list-style-type: none;
-            border-radius: 3px;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            background-color: #333;
-            width: 500px;
-            text-align: center;
-        }
-
-        .file-links ul li {
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-right: none;
-            border-left: none;
-            padding: 5px;
-        }
-
-        .file-links ul li:first-child {
-            border-top: 3px;
-        }
-
-        ul li:last-child {
-            border-bottom: 3px;
-        }
-    </style>
+    
 {{ end }}
 {{ define "body" }}
-    {{ if .files }}
-        <div class="file-links">
-            <ul>
-                {{ range .files }}
-                    <li><a href="{{ .Link }}">{{ .Name }}</a></li>
-                {{ end }}
-            </ul>
-        </div>
-    {{ else }}
-        <p>You have no files yet</p>
-    {{ end }}
+    <div class="wrapper">
+        <form action="">
+            <i class="fas fa-cloud-upload-alt"></i>
+        </form>
+        <section class="progress-area">
+            <li class="row">
+                <i class="fas fa-file-alt"></i>
+                <div class="content">
+                    <div class="details">
+                        <span class="name">placeHolder_img * Uploading</span>
+                        <span class="percent">50%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                </div>
+            </li>
+        </section>
+        <section class="uploaded-area">
+            <li class="row">
+                <i class="fas fa-file-alt"></i>
+                <div class="content">
+                    <div class="details">
+                        <span class="name">placeHolder_img2 * Uploaded</span>
+                        <span class="size">70Kb</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                </div>
+                <i class="fas fa-check"></i>
+            </li>
+        </section>
+    </div>
 {{ end }}
