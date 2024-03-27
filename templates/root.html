@@ -20,8 +20,10 @@
           <li><a class="active" href="/">Home</a></li>
           <li><a href="#">About</a></li>
           <li><a href="#">Contact</a></li>
-          {{ if not .logged}}
+          {{ if eq .title "micro uploads" }}
           <li><a href="#" class="btnLogin">Login</a></li>
+          {{ else }}
+          <li><a href="#">Logout</a></li>
           {{ end }}
         </ul>
       </nav>

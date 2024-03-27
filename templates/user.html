@@ -1,42 +1,16 @@
 {{ template "root" . }}
 
 {{ define "title" }}<title>{{ .title }}</title>{{ end }}
-{{ define "style" }}
-    
-{{ end }}
+{{ define "style" }}<link rel="stylesheet" href="/static/css/user.css">  {{ end }}
 {{ define "body" }}
     <div class="wrapper">
         <form action="">
+            <input type="file" class="file-input" name="file" hidden>
             <i class="fas fa-cloud-upload-alt"></i>
+            <p>Browse files to upload</p>
         </form>
-        <section class="progress-area">
-            <li class="row">
-                <i class="fas fa-file-alt"></i>
-                <div class="content">
-                    <div class="details">
-                        <span class="name">placeHolder_img * Uploading</span>
-                        <span class="percent">50%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress"></div>
-                    </div>
-                </div>
-            </li>
-        </section>
-        <section class="uploaded-area">
-            <li class="row">
-                <i class="fas fa-file-alt"></i>
-                <div class="content">
-                    <div class="details">
-                        <span class="name">placeHolder_img2 * Uploaded</span>
-                        <span class="size">70Kb</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress"></div>
-                    </div>
-                </div>
-                <i class="fas fa-check"></i>
-            </li>
-        </section>
+        <section class="progress-area"></section>
+        <section class="uploaded-area"></section>
     </div>
+    <script src="/static/js/user.js"></script>
 {{ end }}
