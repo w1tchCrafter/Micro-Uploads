@@ -26,10 +26,20 @@ function uploadFile(name) {
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "api/v1/uploads/create");
     xhr.upload.addEventListener("progress", ({loaded, total}) => {
+        const KB = 1 << 10;
+        const MB = 1 << 20;
         let fileLoaded = Math.floor((loaded / total) * 100); // getting percentage of loaded file size
-        let fileTotal = Math.floor(total / 1000);// getting filesize in KB from bytes
+        let fileTotal = Math.floor(total);
         let fileSize;
-        (fileTotal > 1024) ? fileSize = fileTotal + "KB": fileSize = (loaded / (1024 * 1024)).toFixed(2) + "MB";
+        
+        if (fileTotal > MB) {
+            fileSize = Math.floor(fileTotal / MB) + "MB";
+        } else if (fileTotal > KB) {
+            fileSize = Math.floor(fileTotal / KB) + "KB";
+        } else {
+            fileSize = fileTotal + "bytes";
+        }
+
         let progressHTML = `<li class="row">
                                 <i class="fas fa-file-alt"></i>
                                 <div class="content">
@@ -61,6 +71,7 @@ function uploadFile(name) {
                                 <i class="fas fa-check"></i>
                             </li>`;
             uploadedArea.insertAdjacentHTML("afterbegin", uploadedHTML);
+            uploadedArea.querySelectorAll(".name").forEach(v => v.style.color = "#C5D1DE")
         }
     });
 

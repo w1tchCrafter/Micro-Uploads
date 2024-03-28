@@ -54,6 +54,14 @@ func (ac AuthControllers) register(ctx *gin.Context) {
 		return
 	}
 
+	session := sessions.Default(ctx)
+	session.Set("id", userModel.ID)
+	session.Set("username", userModel.Username)
+	if err := session.Save(); err != nil {
+		ctx.Status(http.StatusInternalServerError)
+		return
+	}
+
 	ctx.Status(http.StatusCreated)
 }
 

@@ -33,4 +33,5 @@ type FrontControllers struct {
 type FileResponseData struct {
 	Filename string
 	StrSize  string
+	Link     string
 }

@@ -6,6 +6,7 @@ import (
 	"micro_uploads/internal/models"
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -37,6 +38,8 @@ func (fc FrontControllers) setData(filesData ...models.FileModel) []FileResponse
 		if len(v.OriginalName) >= 12 {
 			ext := filepath.Ext(v.OriginalName)
 			filename = v.OriginalName[0:12] + "... " + ext
+		} else {
+			filename = v.OriginalName
 		}
 
 		switch {
@@ -51,6 +54,7 @@ func (fc FrontControllers) setData(filesData ...models.FileModel) []FileResponse
 		newData = append(newData, FileResponseData{
 			Filename: filename,
 			StrSize:  size,
+			Link:     "/api/v1/uploads/retrieve/" + strings.Split(v.Filename, "/")[1],
 		})
 	}
 
@@ -72,18 +76,20 @@ func (fc FrontControllers) user(ctx *gin.Context) {
 	logged := fc.isLogged(username)
 	files := []models.FileModel{}
 
-	if username != "" {
+	if logged {
 		err := fc.DB.Where("author = ?", username).Find(&files).Error
 
 		if err != nil {
 			ctx.Status(http.StatusInternalServerError)
-			fmt.Println(err)
 			return
 		}
+	} else {
+		ctx.Status(http.StatusForbidden)
+		return
 	}
 
 	ctx.HTML(http.StatusOK, "user", gin.H{
-		"title":  "user",
+		"title":  "micro uploads - " + username,
 		"logged": logged,
 		"files":  fc.setData(files...),
 	})
