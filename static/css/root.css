@@ -4,15 +4,19 @@
     text-decoration: none;
     list-style: none;
     box-sizing: border-box;
+    font-family: 'Poppings', sans-serif;
 }
+
 body{
-    background-color: #202124;
+    background: #22272E;
 }
+
 nav{
-    background: #333;
+    background: #2d333b;
     height: 80px;
     width: 100%;
 }
+
 label.logo{
     color: white;
     font-size: 35px;
@@ -20,6 +24,7 @@ label.logo{
     padding: 0 100px;
     font-weight: bold;
 }
+
 nav ul{
     float: right;
     margin-right: 20px;

@@ -4,6 +4,7 @@
 {{ define "style" }}<link rel="stylesheet" href="/static/css/user.css">{{ end }}
 {{ define "body" }}
     <div class="wrapper">
+        {{ if .logged }}
         <form action="">
             <input type="file" class="file-input" name="file" hidden>
             <i class="fas fa-cloud-upload-alt"></i>
@@ -16,8 +17,8 @@
                 <i class="fas fa-file-alt"></i>
                 <div class="content">
                     <div class="details">
-                        <span class="name">{{ .OriginalName }} * Uploaded</span>
-                        <span class="size">{{ .Size }}</span>
+                        <span class="name">{{ .Filename }} * Uploaded</span>
+                        <span class="size">{{ .StrSize }}</span>
                     </div>
                     <div class="progress-bar">
                         <div class="progress"></div>
@@ -27,6 +28,10 @@
             </li>
             {{ end }}
         </section>
+        {{ else }}
+            <h1>You are not logged</h1>
+            <p>Click <a href="/">here</a> and go to login page</p>
+        {{ end }}
     </div>
     <script src="/static/js/user.js"></script>
 {{ end }}

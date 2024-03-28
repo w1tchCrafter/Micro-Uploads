@@ -20,14 +20,17 @@
           <li><a class="active" href="/">Home</a></li>
           <li><a href="#">About</a></li>
           <li><a href="#">Contact</a></li>
-          {{ if eq .title "micro uploads" }}
-          <li><a href="#" class="btnLogin">Login</a></li>
+          {{ if .logged }}
+          <li><a href="#" id="logout">Logout</a></li>
           {{ else }}
-          <li><a href="#">Logout</a></li>
+          {{ if eq .title "micro uploads - login" }}
+          <li><a href="#" class="btnLogin">Login</a></li>
+          {{ end }}
           {{ end }}
         </ul>
       </nav>
     {{ block "body" . }} {{ end }}
+    <script src="/static/js/root.js"></script>
 </body>
 </html>
 

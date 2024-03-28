@@ -27,6 +27,10 @@ type AuthControllers struct {
 }
 
 type FrontControllers struct {
-	R  *gin.Engine
-	DB *gorm.DB
+	BaseControllers
+}
+
+type FileResponseData struct {
+	Filename string
+	StrSize  string
 }

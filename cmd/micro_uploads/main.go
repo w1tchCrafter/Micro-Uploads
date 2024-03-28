@@ -25,9 +25,10 @@ func main() {
 	router.Use(sessions.Sessions("micro_uploads", store))
 
 	v1 := router.Group("/api/v1")
+	root := router.Group("/")
 	uploadCon := controllers.NewUploadController(v1, db, conf.GetString("uploads.path"))
 	authCon := controllers.NewAuthController(v1, db)
-	fCon := controllers.NewFrontControllers(router, db)
+	fCon := controllers.NewFrontControllers(root, db)
 	server := server.New(conf, router, &uploadCon, &authCon, &fCon)
 
 	server.Start()

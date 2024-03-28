@@ -1,15 +1,13 @@
 .wrapper {
     width: 430px;
     padding: 30px;
-    background: #fff;
     border-radius: 3px;
     margin-left: 35%;
-    margin-top: 5%;
 }
 
 .wrapper form {
     height: 167px;
-    border: 2px dashed #333;
+    border: 2px dashed #2D333B;
     border-radius: 3px;
     display: flex;
     align-items: center;
@@ -20,35 +18,41 @@
 }
 
 form:where(i, p) {
-    color: #333;
+    color: #4D525B;
 }
 
 form i {
     font-size: 50px;
+    /* color: #2D333B; */
+    color: #4D525B;
 }
 
 form p {
     font-size: 16px;
     margin-top: 15px;
+    color: #4D525B;
 }
 
 section .row {
-    background-color: #c3bdbd;
+    /* background-color: #333333; */
     margin-bottom: 10px;
     list-style: none;
     padding: 15px 20px;
-    border-radius: 3px;
     display: flex;
+    border: 1px solid #2D333B;
+    border-radius: 3px;
     align-items: center;
     justify-content: space-between;
 }
 
 section .row i {
     font-size: 18px;
+    color: #2D333B;
 }
 
 section .details span {
     font-size: 14px;
+    color: #4D525B;
 }
 
 .progress-area .row .content {
@@ -66,14 +70,14 @@ section .details span {
 .progress-area .progress-bar {
     height: 6px;
     width: 100%;
-    background: #fff;
+    background: #333;
     margin-bottom: 4px;
     border-radius: 30px; 
 }
 
 .progress-bar .progress {
     height: 100%;
-    background: #333;
+    background: #fff;
     border-radius: inherit;
 }
 
@@ -99,4 +103,11 @@ section .details span {
 
 .uploaded-area .fa-check {
     font-size: 16px;
+}
+
+@media (max-width: 600px) {
+    .wrapper {
+        width: 100%;
+        margin: 0;
+    }
 }
