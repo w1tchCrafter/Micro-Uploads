@@ -48,7 +48,8 @@ func (uc UploadControllers) uploadFile(ctx *gin.Context) {
 	}
 
 	username := ctx.GetString("username")
-	if err := uc.DB.Create(&models.FileModel{Filename: filename, Size: file.Size, Author: username}).Error; err != nil {
+	dbfile := models.FileModel{Filename: filename, Size: file.Size, Author: username, OriginalName: file.Filename}
+	if err := uc.DB.Create(&dbfile).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR_MSG})
 		return
 	}

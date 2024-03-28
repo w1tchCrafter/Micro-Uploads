@@ -27,5 +27,6 @@ type AuthControllers struct {
 }
 
 type FrontControllers struct {
-	R *gin.Engine
+	R  *gin.Engine
+	DB *gorm.DB
 }

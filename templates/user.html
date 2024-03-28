@@ -1,7 +1,7 @@
 {{ template "root" . }}
 
 {{ define "title" }}<title>{{ .title }}</title>{{ end }}
-{{ define "style" }}<link rel="stylesheet" href="/static/css/user.css">  {{ end }}
+{{ define "style" }}<link rel="stylesheet" href="/static/css/user.css">{{ end }}
 {{ define "body" }}
     <div class="wrapper">
         <form action="">
@@ -10,7 +10,23 @@
             <p>Browse files to upload</p>
         </form>
         <section class="progress-area"></section>
-        <section class="uploaded-area"></section>
+        <section class="uploaded-area">
+            {{ range .files }}
+            <li class="row">
+                <i class="fas fa-file-alt"></i>
+                <div class="content">
+                    <div class="details">
+                        <span class="name">{{ .OriginalName }} * Uploaded</span>
+                        <span class="size">{{ .Size }}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                </div>
+                <i class="fas fa-check"></i>
+            </li>
+            {{ end }}
+        </section>
     </div>
     <script src="/static/js/user.js"></script>
 {{ end }}

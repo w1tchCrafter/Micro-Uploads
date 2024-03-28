@@ -3,6 +3,8 @@
     padding: 30px;
     background: #fff;
     border-radius: 3px;
+    margin-left: 35%;
+    margin-top: 5%;
 }
 
 .wrapper form {
@@ -62,7 +64,6 @@ section .details span {
 }
 
 .progress-area .progress-bar {
-    /*stopped here*/
     height: 6px;
     width: 100%;
     background: #fff;
@@ -72,7 +73,6 @@ section .details span {
 
 .progress-bar .progress {
     height: 100%;
-    width: 50%;
     background: #333;
     border-radius: inherit;
 }

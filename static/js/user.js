@@ -12,6 +12,12 @@ fileInput.onchange = ({target}) => {
 
     if (file) {
         let filename = file.name;
+
+        if (filename.length >= 12) {
+            let splitname = filename.split(".");
+            filename = splitname[0].substring(0, 12) + "... ." + splitname[1];
+        }
+
         uploadFile(filename);
     }
 };
@@ -22,6 +28,8 @@ function uploadFile(name) {
     xhr.upload.addEventListener("progress", ({loaded, total}) => {
         let fileLoaded = Math.floor((loaded / total) * 100); // getting percentage of loaded file size
         let fileTotal = Math.floor(total / 1000);// getting filesize in KB from bytes
+        let fileSize;
+        (fileTotal > 1024) ? fileSize = fileTotal + "KB": fileSize = (loaded / (1024 * 1024)).toFixed(2) + "MB";
         let progressHTML = `<li class="row">
                                 <i class="fas fa-file-alt"></i>
                                 <div class="content">
@@ -30,16 +38,21 @@ function uploadFile(name) {
                                         <span class="percent">${fileLoaded}%</span>
                                     </div>
                                     <div class="progress-bar">
-                                        <div class="progress" style="width: ${fileLoaded}%></div>
+                                        <div class="progress"></div>
                                     </div>
                                 </div>
                             </li>`;
-        let uploadedHTML = `<li class="row">
+        progressArea.innerHTML = progressHTML;
+        progressArea.querySelector(".progress").style.width = `${fileLoaded}%`;
+
+        if (loaded === total) {
+            progressArea.innerHTML = "";
+            let uploadedHTML = `<li class="row">
                                 <i class="fas fa-file-alt"></i>
                                 <div class="content">
                                     <div class="details">
-                                        <span class="name">placeHolder_img2 * Uploaded</span>
-                                        <span class="size">70Kb</span>
+                                        <span class="name">${name} * Uploaded</span>
+                                        <span class="size">${fileSize}</span>
                                     </div>
                                     <div class="progress-bar">
                                         <div class="progress"></div>
@@ -47,7 +60,8 @@ function uploadFile(name) {
                                 </div>
                                 <i class="fas fa-check"></i>
                             </li>`;
-        progressArea.innerHTML = progressHTML;
+            uploadedArea.insertAdjacentHTML("afterbegin", uploadedHTML);
+        }
     });
 
     let formData = new FormData(form);

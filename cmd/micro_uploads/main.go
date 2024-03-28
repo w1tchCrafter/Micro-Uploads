@@ -27,7 +27,7 @@ func main() {
 	v1 := router.Group("/api/v1")
 	uploadCon := controllers.NewUploadController(v1, db, conf.GetString("uploads.path"))
 	authCon := controllers.NewAuthController(v1, db)
-	fCon := controllers.NewFrontControllers(router)
+	fCon := controllers.NewFrontControllers(router, db)
 	server := server.New(conf, router, &uploadCon, &authCon, &fCon)
 
 	server.Start()
