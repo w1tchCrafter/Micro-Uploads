@@ -28,10 +28,5 @@ type AuthControllers struct {
 
 type FrontControllers struct {
 	BaseControllers
-}
-
-type FileResponseData struct {
-	Filename string
-	StrSize  string
-	Link     string
+	front services.Front
 }

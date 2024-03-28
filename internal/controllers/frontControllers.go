@@ -1,12 +1,9 @@
 package controllers
 
 import (
-	"fmt"
 	"micro_uploads/internal/middleware"
 	"micro_uploads/internal/models"
 	"net/http"
-	"path/filepath"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -24,46 +21,9 @@ func (fc *FrontControllers) StartRoutes() {
 	fc.R.GET("/user", middleware.GetUsername(), fc.user)
 }
 
-func (fc FrontControllers) isLogged(username string) bool {
-	return username != ""
-}
-
-func (fc FrontControllers) setData(filesData ...models.FileModel) []FileResponseData {
-	newData := make([]FileResponseData, 0)
-	var filename, size string
-	const KB = 1 << 10
-	const MB = 1 << 20
-
-	for _, v := range filesData {
-		if len(v.OriginalName) >= 12 {
-			ext := filepath.Ext(v.OriginalName)
-			filename = v.OriginalName[0:12] + "... " + ext
-		} else {
-			filename = v.OriginalName
-		}
-
-		switch {
-		case v.Size >= MB:
-			size = fmt.Sprint(int(float64(v.Size))/MB, "MB")
-		case v.Size >= KB:
-			size = fmt.Sprint(int(float64(v.Size))/KB, "KB")
-		default:
-			size = fmt.Sprint(v.Size, "bytes")
-		}
-
-		newData = append(newData, FileResponseData{
-			Filename: filename,
-			StrSize:  size,
-			Link:     "/api/v1/uploads/retrieve/" + strings.Split(v.Filename, "/")[1],
-		})
-	}
-
-	return newData
-}
-
 func (fc FrontControllers) index(ctx *gin.Context) {
 	username := ctx.GetString("username")
-	logged := fc.isLogged(username)
+	logged := fc.front.IsLogged(username)
 
 	ctx.HTML(http.StatusOK, "index", gin.H{
 		"title":  "micro uploads - login",
@@ -73,7 +33,7 @@ func (fc FrontControllers) index(ctx *gin.Context) {
 
 func (fc FrontControllers) user(ctx *gin.Context) {
 	username := ctx.GetString("username")
-	logged := fc.isLogged(username)
+	logged := fc.front.IsLogged(username)
 	files := []models.FileModel{}
 
 	if logged {
@@ -91,6 +51,6 @@ func (fc FrontControllers) user(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "user", gin.H{
 		"title":  "micro uploads - " + username,
 		"logged": logged,
-		"files":  fc.setData(files...),
+		"files":  fc.front.SetData(files...),
 	})
 }
