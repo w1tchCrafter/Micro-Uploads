@@ -34,7 +34,7 @@ func (fc FrontControllers) index(ctx *gin.Context) {
 func (fc FrontControllers) user(ctx *gin.Context) {
 	username := ctx.GetString("username")
 	logged := fc.front.IsLogged(username)
-	files := []models.FileModel{}
+	files := make([]models.FileModel, 0)
 
 	if logged {
 		err := fc.DB.Where("author = ?", username).Find(&files).Error

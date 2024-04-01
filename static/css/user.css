@@ -51,14 +51,10 @@ section .row i {
     color: #C5D1DE;
 }
 
-section .details span a {
+section .details span {
     font-size: 14px;
     color: #C5D1DE;
     text-decoration: none;
-}
-
-section .details a:hover {
-    text-decoration: underline;
 }
 
 .progress-area .row .content {
