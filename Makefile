@@ -23,7 +23,9 @@ run: build
 test:
 	@echo "running tests..."
 	@$(GO) test ./...
-
+# Run in development mode
+dev:
+	@air
 # Clean generated files
 clean:
 	@echo "cleaning up..."
