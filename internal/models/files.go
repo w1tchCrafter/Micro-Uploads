@@ -8,4 +8,5 @@ type FileModel struct {
 	OriginalName string `gorm:"originalfilename"`
 	Author       string `gorm:"author"`
 	Size         int64  `gorm:"size"`
+	IsMidia      bool   `gorm:"ismidia"`
 }

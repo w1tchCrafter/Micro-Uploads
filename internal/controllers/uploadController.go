@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"micro_uploads/internal/middleware"
 	"micro_uploads/internal/models"
 	"micro_uploads/internal/services"
@@ -44,11 +45,13 @@ func (uc UploadControllers) uploadFile(ctx *gin.Context) {
 	filename, err := uc.filesystem.Save(file)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR_MSG})
+		fmt.Println(err)
 		return
 	}
 
 	username := ctx.GetString("username")
-	dbfile := models.FileModel{Filename: filename, Size: file.Size, Author: username, OriginalName: file.Filename}
+	ismidia := uc.filesystem.IsMidia(file.Header.Get("Content-Type"))
+	dbfile := models.FileModel{Filename: filename, Size: file.Size, Author: username, OriginalName: file.Filename, IsMidia: ismidia}
 	if err := uc.DB.Create(&dbfile).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR_MSG})
 		return
@@ -68,7 +71,7 @@ func (uc UploadControllers) getFile(ctx *gin.Context) {
 		return
 	}
 
-	fileData, err := uc.filesystem.Open(dbFileData.Filename)
+	fileData, err := uc.filesystem.Open(dbFileData.Filename, dbFileData.IsMidia)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR_MSG})
@@ -76,5 +79,11 @@ func (uc UploadControllers) getFile(ctx *gin.Context) {
 	}
 
 	defer fileData.Close()
+
+	if dbFileData.IsMidia {
+		ctx.File(dbFileData.Filename)
+		return
+	}
+
 	ctx.DataFromReader(http.StatusOK, dbFileData.Size, "application/octet-stream", fileData, nil)
 }
