@@ -6,18 +6,21 @@ class Form {
         this.expectedResponse = expectedResponse;
     }
 
-    activate(callback) {
+    activate(success, err) {
         this.formElement.addEventListener("submit", async() => {
             event.preventDefault();
-            const body = new FormData(this.formElement);
+            let body = new FormData(this.formElement);
     
-            const response = await fetch(this.action, {
+            let response = await fetch(this.action, {
                 method: this.method,
                 body
             });
     
             if (response.status === this.expectedResponse) {
-                callback();
+                success();
+            } else {
+                let json = await response.json();
+                err(json);
             }
         });
     }
@@ -26,8 +29,47 @@ class Form {
 const login = document.querySelector("#loginform");
 const register = document.querySelector("#registerform");
 
-const loginForm = new Form("/api/v1/auth/login", "post", login, 200);
-const registerForm = new Form("/api/v1/auth/register", "post", register, 201);
+let loginForm = new Form("/api/v1/auth/login", "post", login, 200);
+let registerForm = new Form("/api/v1/auth/register", "post", register, 201);
 
-loginForm.activate(() => document.location = "/user");
-registerForm.activate(() => document.location = "/user");
+loginForm.activate(() => document.location = "/user", json => {
+    let err = json["error"];
+    
+    switch (err) {
+        case ACCESS_DENIED:
+            // do something
+            break;
+
+        case BAD_REQUEST:
+            // do something else
+            break;
+
+        case SERVER_ERR:
+            // do way something else
+            break;
+
+        default:
+            break;
+    }
+});
+
+registerForm.activate(() => document.location = "/user", json => {
+    let err = json["error"];
+    
+    switch (err) {
+        case USER_EXISTS:
+            // do something
+            break;
+
+        case BAD_REQUEST:
+            // do something else
+            break;
+
+        case SERVER_ERR:
+            // do way something else
+            break;
+
+        default:
+            break;
+    }
+});
