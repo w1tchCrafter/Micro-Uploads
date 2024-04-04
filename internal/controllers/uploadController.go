@@ -13,12 +13,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const (
-	BAD_REQ_MSG    = "error uploading file"
-	SERVER_ERR_MSG = "error, try again later"
-	SUCCESS_MSG    = "file uploaded successfully"
-)
-
 func NewUploadController(r *gin.RouterGroup, db *gorm.DB, fsPath string) UploadControllers {
 	uc := UploadControllers{}
 	uc.R = r
@@ -38,13 +32,13 @@ func (uc *UploadControllers) StartRoutes() {
 func (uc UploadControllers) uploadFile(ctx *gin.Context) {
 	file, err := ctx.FormFile("file")
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": BAD_REQ_MSG})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": BAD_REQUEST})
 		return
 	}
 
 	filename, err := uc.filesystem.Save(file)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR_MSG})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
 		fmt.Println(err)
 		return
 	}
@@ -53,11 +47,11 @@ func (uc UploadControllers) uploadFile(ctx *gin.Context) {
 	ismidia := uc.filesystem.IsMidia(file.Header.Get("Content-Type"))
 	dbfile := models.FileModel{Filename: filename, Size: file.Size, Author: username, OriginalName: file.Filename, IsMidia: ismidia}
 	if err := uc.DB.Create(&dbfile).Error; err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR_MSG})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"created": SUCCESS_MSG})
+	ctx.JSON(http.StatusCreated, gin.H{"created": SUCCESS_UPDATE})
 }
 
 func (uc UploadControllers) getFile(ctx *gin.Context) {
@@ -67,14 +61,14 @@ func (uc UploadControllers) getFile(ctx *gin.Context) {
 	err := uc.DB.Where("Filename = ?", fullFilePath).First(&dbFileData).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		ctx.Status(http.StatusNotFound)
+		ctx.JSON(http.StatusNotFound, gin.H{"error": NOT_FOUND})
 		return
 	}
 
 	fileData, err := uc.filesystem.Open(dbFileData.Filename, dbFileData.IsMidia)
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR_MSG})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
 		return
 	}
 

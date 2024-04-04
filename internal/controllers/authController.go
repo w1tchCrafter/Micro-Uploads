@@ -31,14 +31,14 @@ func (ac AuthControllers) register(ctx *gin.Context) {
 	newUser := models.UserForm{}
 
 	if err := ctx.Bind(&newUser); err != nil {
-		ctx.Status(http.StatusBadRequest)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": BAD_REQUEST})
 		return
 	}
 
 	hashed, err := ac.authentication.HashPassword(newUser.Password)
 
 	if err != nil {
-		ctx.Status(http.StatusInternalServerError)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
 		return
 	}
 
@@ -47,10 +47,10 @@ func (ac AuthControllers) register(ctx *gin.Context) {
 	err = ac.DB.Create(&userModel).Error
 
 	if errors.Is(err, gorm.ErrDuplicatedKey) {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "username already exists"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": USER_EXISTS})
 		return
 	} else if err != nil {
-		ctx.Status(http.StatusInternalServerError)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
 		return
 	}
 
@@ -58,18 +58,18 @@ func (ac AuthControllers) register(ctx *gin.Context) {
 	session.Set("id", userModel.ID)
 	session.Set("username", userModel.Username)
 	if err := session.Save(); err != nil {
-		ctx.Status(http.StatusInternalServerError)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
 		return
 	}
 
-	ctx.Status(http.StatusCreated)
+	ctx.JSON(http.StatusCreated, gin.H{"created": CREATED_USER})
 }
 
 func (ac AuthControllers) login(ctx *gin.Context) {
 	loginUser := models.UserForm{}
 
 	if err := ctx.Bind(&loginUser); err != nil {
-		ctx.Status(http.StatusBadRequest)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": BAD_REQUEST})
 		return
 	}
 
@@ -77,14 +77,14 @@ func (ac AuthControllers) login(ctx *gin.Context) {
 	err := ac.DB.Where("username = ?", loginUser.Username).First(&userModel).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		ctx.Status(http.StatusUnauthorized)
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": ACCESS_DENIED})
 		return
 	}
 
 	if err := ac.authentication.ValidatePassword(
 		loginUser.Password, userModel.Password,
 	); err == bcrypt.ErrMismatchedHashAndPassword {
-		ctx.Status(http.StatusUnauthorized)
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": ACCESS_DENIED})
 		return
 	}
 
@@ -92,16 +92,16 @@ func (ac AuthControllers) login(ctx *gin.Context) {
 	session.Set("id", userModel.ID)
 	session.Set("username", userModel.Username)
 	if err := session.Save(); err != nil {
-		ctx.Status(http.StatusInternalServerError)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
 		return
 	}
 
-	ctx.Status(http.StatusOK)
+	ctx.JSON(http.StatusOK, gin.H{"success": LOGIN_MSG})
 }
 
 func (ac AuthControllers) logout(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	session.Clear()
 	session.Save()
-	ctx.Status(http.StatusOK)
+	ctx.JSON(http.StatusOK, gin.H{"success": LOGOUT_MSG})
 }

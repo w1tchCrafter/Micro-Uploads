@@ -40,11 +40,11 @@ func (fc FrontControllers) user(ctx *gin.Context) {
 		err := fc.DB.Where("author = ?", username).Find(&files).Error
 
 		if err != nil {
-			ctx.Status(http.StatusInternalServerError)
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
 			return
 		}
 	} else {
-		ctx.Status(http.StatusForbidden)
+		ctx.JSON(http.StatusForbidden, ACCESS_DENIED)
 		return
 	}
 
