@@ -54,14 +54,7 @@ func (ac AuthControllers) register(ctx *gin.Context) {
 		return
 	}
 
-	session := sessions.Default(ctx)
-	session.Set("id", userModel.ID)
-	session.Set("username", userModel.Username)
-	if err := session.Save(); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
-		return
-	}
-
+	ac.setSession(ctx, sessions.Default(ctx), userModel.ID, userModel.Username)
 	ctx.JSON(http.StatusCreated, gin.H{"created": CREATED_USER})
 }
 
@@ -88,20 +81,27 @@ func (ac AuthControllers) login(ctx *gin.Context) {
 		return
 	}
 
-	session := sessions.Default(ctx)
-	session.Set("id", userModel.ID)
-	session.Set("username", userModel.Username)
-	if err := session.Save(); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
-		return
-	}
-
+	ac.setSession(ctx, sessions.Default(ctx), userModel.ID, userModel.Username)
 	ctx.JSON(http.StatusOK, gin.H{"success": LOGIN_MSG})
 }
 
 func (ac AuthControllers) logout(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	session.Clear()
-	session.Save()
+
+	if err := session.Save(); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{"success": LOGOUT_MSG})
+}
+
+func (ac AuthControllers) setSession(ctx *gin.Context, s sessions.Session, id, username string) {
+	s.Set("id", id)
+	s.Set("username", username)
+	if err := s.Save(); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
+                ctx.Abort()
+	}
 }
