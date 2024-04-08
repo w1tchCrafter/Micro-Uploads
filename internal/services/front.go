@@ -37,7 +37,7 @@ func (f Front) SetData(filesData ...models.FileModel) []FileResponseData {
 		newData = append(newData, FileResponseData{
 			Filename: filename,
 			StrSize:  size,
-			Link:     "/api/v1/uploads/retrieve/" + strings.Split(v.Filename, "/")[1],
+			Link:     "/api/v1/uploads/" + strings.Split(v.Filename, "/")[1],
 		})
 	}
 

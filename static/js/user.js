@@ -4,43 +4,43 @@ const progressArea = document.querySelector(".progress-area");
 const uploadedArea = document.querySelector(".uploaded-area");
 
 form.addEventListener("click", () => {
-    fileInput.click();
+  fileInput.click();
 });
 
-fileInput.onchange = ({target}) => {
-    let [file] = target.files; // selecting target.files[0]
+fileInput.onchange = ({ target }) => {
+  let [file] = target.files; // selecting target.files[0]
 
-    if (file) {
-        let filename = file.name;
+  if (file) {
+    let filename = file.name;
 
-        if (filename.length >= 12) {
-            let splitname = filename.split(".");
-            filename = splitname[0].substring(0, 12) + "... ." + splitname[1];
-        }
-
-        uploadFile(filename);
+    if (filename.length >= 12) {
+      let splitname = filename.split(".");
+      filename = splitname[0].substring(0, 12) + "... ." + splitname[1];
     }
+
+    uploadFile(filename);
+  }
 };
 
 function uploadFile(name) {
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "api/v1/uploads/create");
-    xhr.upload.addEventListener("progress", ({loaded, total}) => {
-        const KB = 1 << 10;
-        const MB = 1 << 20;
-        let fileLoaded = Math.floor((loaded / total) * 100); // getting percentage of loaded file size
-        let fileTotal = Math.floor(total);
-        let fileSize;
-        
-        if (fileTotal > MB) {
-            fileSize = Math.floor(fileTotal / MB) + "MB";
-        } else if (fileTotal > KB) {
-            fileSize = Math.floor(fileTotal / KB) + "KB";
-        } else {
-            fileSize = fileTotal + "bytes";
-        }
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", "api/v1/uploads/");
+  xhr.upload.addEventListener("progress", ({ loaded, total }) => {
+    const KB = 1 << 10;
+    const MB = 1 << 20;
+    let fileLoaded = Math.floor((loaded / total) * 100); // getting percentage of loaded file size
+    let fileTotal = Math.floor(total);
+    let fileSize;
 
-        let progressHTML = `<li class="row">
+    if (fileTotal > MB) {
+      fileSize = Math.floor(fileTotal / MB) + "MB";
+    } else if (fileTotal > KB) {
+      fileSize = Math.floor(fileTotal / KB) + "KB";
+    } else {
+      fileSize = fileTotal + "bytes";
+    }
+
+    let progressHTML = `<li class="row">
                                 <i class="fas fa-file-alt"></i>
                                 <div class="content">
                                     <div class="details">
@@ -52,12 +52,12 @@ function uploadFile(name) {
                                     </div>
                                 </div>
                             </li>`;
-        progressArea.innerHTML = progressHTML;
-        progressArea.querySelector(".progress").style.width = `${fileLoaded}%`;
+    progressArea.innerHTML = progressHTML;
+    progressArea.querySelector(".progress").style.width = `${fileLoaded}%`;
 
-        if (loaded === total) {
-            progressArea.innerHTML = "";
-            let uploadedHTML = `<li class="row">
+    if (loaded === total) {
+      progressArea.innerHTML = "";
+      let uploadedHTML = `<li class="row">
                                 <i class="fas fa-file-alt"></i>
                                 <div class="content">
                                     <div class="details">
@@ -70,11 +70,13 @@ function uploadFile(name) {
                                 </div>
                                 <i class="fas fa-check"></i>
                             </li>`;
-            uploadedArea.insertAdjacentHTML("afterbegin", uploadedHTML);
-            uploadedArea.querySelectorAll(".name").forEach(v => v.style.color = "#C5D1DE")
-        }
-    });
+      uploadedArea.insertAdjacentHTML("afterbegin", uploadedHTML);
+      uploadedArea.querySelectorAll(".name").forEach((v) =>
+        v.style.color = "#C5D1DE"
+      );
+    }
+  });
 
-    let formData = new FormData(form);
-    xhr.send(formData);
+  let formData = new FormData(form);
+  xhr.send(formData);
 }

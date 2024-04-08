@@ -24,8 +24,8 @@ func NewUploadController(r *gin.RouterGroup, db *gorm.DB, fsPath string) UploadC
 func (uc *UploadControllers) StartRoutes() {
 	uploads := uc.R.Group("/uploads")
 	{
-		uploads.POST("/create", middleware.GetUsername(), uc.uploadFile)
-		uploads.GET("/retrieve/:filename", uc.getFile)
+		uploads.POST("/", middleware.GetUsername(), uc.uploadFile)
+		uploads.GET("/:filename", uc.getFile)
 	}
 }
 
