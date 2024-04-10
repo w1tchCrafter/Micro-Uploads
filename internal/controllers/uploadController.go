@@ -48,14 +48,23 @@ func (uc UploadControllers) uploadFile(ctx *gin.Context) {
 
 	username := ctx.GetString("username")
 	ismidia := uc.filesystem.IsMidia(file.Header.Get("Content-Type"))
-	dbfile := models.FileModel{Filename: filename, Size: file.Size, Author: username, OriginalName: file.Filename, IsMidia: ismidia}
+	dbfile := models.FileModel{
+		Filename:     filename,
+		Size:         file.Size,
+		Author:       username,
+		OriginalName: file.Filename,
+		IsMidia:      ismidia,
+	}
 
 	if err := uc.DB.Create(&dbfile).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"created": SUCCESS_UPDATE})
+	fmt.Println(file.Size)
+	ctx.Set("username", username)
+	ctx.Set("datasize", file.Size)
+	ctx.Set("status", http.StatusCreated)
 }
 
 func (uc UploadControllers) getFile(ctx *gin.Context) {

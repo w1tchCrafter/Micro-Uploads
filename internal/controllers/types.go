@@ -10,7 +10,7 @@ import (
 const (
 	// defining api messages here
 
-	SUCCESS_UPDATE string = "file was uploaded successfully"
+	SUCCESS_UPLOAD string = "file was uploaded successfully"
 	CREATED_USER   string = "user was created successfully"
 	LOGIN_MSG      string = "user logged successfully"
 	LOGOUT_MSG     string = "user logged out successfully"
