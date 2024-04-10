@@ -15,12 +15,14 @@ type UserModel struct {
 	ID       string `gorm:"id;type:uuid;primarykey"`
 	Username string `gorm:"username;unique;not null"`
 	Password string `gorm:"password;not null"`
+	Storage  uint   `gorm:"storage"`
 }
 
 func NewUserModel(userform UserForm) UserModel {
 	return UserModel{
 		ID:       uuid.New().String(),
 		Username: userform.Username,
+		Storage:  0,
 		Password: "",
 	}
 }

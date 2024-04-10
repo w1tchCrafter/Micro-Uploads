@@ -7,8 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
-// defining api messages here
 const (
+	// defining api messages here
+
 	SUCCESS_UPDATE string = "file was uploaded successfully"
 	CREATED_USER   string = "user was created successfully"
 	LOGIN_MSG      string = "user logged successfully"
@@ -18,6 +19,8 @@ const (
 	NOT_FOUND      string = "page not found"
 	SERVER_ERR     string = "an error ocurred, try again later"
 	BAD_REQUEST    string = "error, bad request"
+
+	MAX_UPLOAD_CAP uint = 1 << 30
 )
 
 type IControllers interface {

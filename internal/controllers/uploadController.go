@@ -22,10 +22,13 @@ func NewUploadController(r *gin.RouterGroup, db *gorm.DB, fsPath string) UploadC
 }
 
 func (uc *UploadControllers) StartRoutes() {
+	uc.R.Use(middleware.GetUsername())
+
 	uploads := uc.R.Group("/uploads")
 	{
-		uploads.POST("/", middleware.GetUsername(), uc.uploadFile)
+		uploads.POST("/", middleware.UpdateStorage(uc.DB), uc.uploadFile)
 		uploads.GET("/:filename", uc.getFile)
+		uploads.DELETE("/")
 	}
 }
 
@@ -46,6 +49,7 @@ func (uc UploadControllers) uploadFile(ctx *gin.Context) {
 	username := ctx.GetString("username")
 	ismidia := uc.filesystem.IsMidia(file.Header.Get("Content-Type"))
 	dbfile := models.FileModel{Filename: filename, Size: file.Size, Author: username, OriginalName: file.Filename, IsMidia: ismidia}
+
 	if err := uc.DB.Create(&dbfile).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
 		return
