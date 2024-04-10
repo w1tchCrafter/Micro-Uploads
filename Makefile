@@ -22,7 +22,7 @@ run: build
 # Run tests
 test:
 	@echo "running tests..."
-	@$(GO) test ./...
+	@$(GO) test -v ./...
 # Run in development mode
 dev:
 	@air

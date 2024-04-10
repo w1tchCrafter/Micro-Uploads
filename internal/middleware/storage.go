@@ -11,6 +11,9 @@ import (
 const (
 	// defining here to avoid circular imports
 	GB uint = 1 << 30
+
+	SERVER_ERR   string = "an error ocurred, try again later"
+	FULL_STORAGE string = "you reached your max storage space"
 )
 
 func UpdateStorage(db *gorm.DB) gin.HandlerFunc {
@@ -23,19 +26,21 @@ func UpdateStorage(db *gorm.DB) gin.HandlerFunc {
 		user := models.UserModel{}
 
 		if err := db.Where("username = ?", username).First(&user).Error; err != nil {
-			//handle error
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
+			return
 		}
 
 		stored := int(user.Storage)
 		current := stored + datasize
 
-		if uint(stored) > GB {
-			ctx.JSON(http.StatusBadRequest, nil)
+		if uint(current) > GB {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": FULL_STORAGE})
 			return
 		}
 
 		if err := db.Model(&user).Update("storage", current).Error; err != nil {
-			//
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
+			return
 		}
 	}
 }
