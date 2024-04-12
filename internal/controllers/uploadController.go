@@ -28,7 +28,7 @@ func (uc *UploadControllers) StartRoutes() {
 	{
 		uploads.POST("/", middleware.UpdateStorage(uc.DB), uc.uploadFile)
 		uploads.GET("/:filename", uc.getFile)
-		uploads.DELETE("/")
+		uploads.DELETE("/:filename", middleware.UpdateStorage(uc.DB), uc.deleteFile)
 	}
 }
 
@@ -61,7 +61,6 @@ func (uc UploadControllers) uploadFile(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println(file.Size)
 	ctx.Set("username", username)
 	ctx.Set("datasize", file.Size)
 	ctx.Set("status", http.StatusCreated)
@@ -93,4 +92,30 @@ func (uc UploadControllers) getFile(ctx *gin.Context) {
 	}
 
 	ctx.DataFromReader(http.StatusOK, dbFileData.Size, "application/octet-stream", fileData, nil)
+}
+
+func (uc UploadControllers) deleteFile(ctx *gin.Context) {
+	filename := ctx.Param("filename")
+	author := ctx.GetString("username")
+	fullFilePath := filepath.Join(uc.filesystem.UploadPath, filename)
+	file := models.FileModel{}
+
+	if author == "" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": ACCESS_DENIED})
+		return
+	}
+
+	if err := uc.DB.Where("Filename = ?", fullFilePath).First(&file).Error; err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": NOT_FOUND})
+		return
+	}
+
+	if err := uc.DB.Delete(&file).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
+		return
+	}
+
+	ctx.Set("username", author)
+	ctx.Set("datasize", -file.Size)
+	ctx.Set("status", http.StatusOK)
 }

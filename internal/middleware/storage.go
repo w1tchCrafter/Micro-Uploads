@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"micro_uploads/internal/models"
 	"net/http"
 
@@ -36,7 +35,6 @@ func UpdateStorage(db *gorm.DB) gin.HandlerFunc {
 
 		stored := int64(user.Storage)
 		current := stored + datasize
-		fmt.Println("from storage,", username, datasize, status)
 
 		if uint(current) > GB {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": FULL_STORAGE})
