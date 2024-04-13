@@ -100,20 +100,26 @@ func (uc UploadControllers) deleteFile(ctx *gin.Context) {
 	fullFilePath := filepath.Join(uc.filesystem.UploadPath, filename)
 	file := models.FileModel{}
 
-	if author == "" {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": ACCESS_DENIED})
-		return
-	}
+	tx := uc.DB.Begin()
 
-	if err := uc.DB.Where("Filename = ?", fullFilePath).First(&file).Error; err != nil {
+	if err := tx.Where("Filename = ?", fullFilePath).First(&file).Error; err != nil {
+		tx.Rollback()
 		ctx.JSON(http.StatusNotFound, gin.H{"error": NOT_FOUND})
 		return
 	}
 
-	if err := uc.DB.Delete(&file).Error; err != nil {
+	if author == "" || author != file.Author {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": ACCESS_DENIED})
+		return
+	}
+
+	if err := tx.Delete(&file).Error; err != nil {
+		tx.Rollback()
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": SERVER_ERR})
 		return
 	}
+
+	tx.Commit()
 
 	ctx.Set("username", author)
 	ctx.Set("datasize", -file.Size)
