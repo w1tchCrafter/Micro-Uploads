@@ -1,8 +1,9 @@
 .wrapper {
-    width: 430px;
+    width: 860px;
     padding: 30px;
     border-radius: 3px;
-    margin-left: 35%;
+    margin-left: 20%;
+    display: flex;
 }
 
 .wrapper form {
@@ -13,8 +14,10 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    margin: 30px 0;
+    margin-right: 10px;
     cursor: pointer;
+    width: 430px;
+    height: 250px;
 }
 
 form:where(i, p) {
@@ -23,19 +26,16 @@ form:where(i, p) {
 
 form i {
     font-size: 50px;
-    /* color: #4D525B; */
     color: #C5D1DE;
 }
 
 form p {
     font-size: 16px;
     margin-top: 15px;
-    /* color: #4D525B; */
     color: #C5D1DE;
 }
 
 section .row {
-    /* background-color: #333333; */
     margin-bottom: 10px;
     list-style: none;
     padding: 15px 20px;
@@ -84,7 +84,7 @@ section .details span {
 }
 
 .uploaded-area {
-    max-height: 150px;
+    max-height: 400px;
     overflow-y: scroll;
 }
 
@@ -112,5 +112,13 @@ section .details span {
     .wrapper {
         width: 100%;
         margin: 0;
+        display: block;
+        padding: 20px;
+    }
+
+    .wrapper form {
+        width: 100%;
+        margin: 0;
+        margin-bottom: 5px;
     }
 }

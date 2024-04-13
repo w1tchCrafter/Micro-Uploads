@@ -68,9 +68,9 @@ function uploadFile(name) {
                                         <div class="progress"></div>
                                     </div>
                                 </div>
-                                <i class="fas fa-check"></i>
+                                <i class="fas fa-download"></i>
                             </li>`;
-      uploadedArea.insertAdjacentHTML("afterbegin", uploadedHTML);
+      uploadedArea.insertAdjacentHTML("afterend", uploadedHTML);
       uploadedArea.querySelectorAll(".name").forEach((v) =>
         v.style.color = "#C5D1DE"
       );
