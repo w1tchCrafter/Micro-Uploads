@@ -6,17 +6,17 @@ const icon_close = document.querySelector(".icon-close");
 const container = document.querySelector(".container");
 
 register_link.addEventListener("click", () => {
-    wrapper.classList.add("active");
+  wrapper.classList.add("active");
 });
 
 login_link.addEventListener("click", () => {
-    wrapper.classList.remove("active");
+  wrapper.classList.remove("active");
 });
 
 btn_login.addEventListener("click", () => {
-    wrapper.classList.add("active-popup");
+  wrapper.classList.add("active-popup");
 });
 
 icon_close.addEventListener("click", () => {
-    wrapper.classList.remove("active-popup");
+  wrapper.classList.remove("active-popup");
 });

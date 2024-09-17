@@ -11,6 +11,8 @@ BINARY := micro_uploads
 
 # Build the project
 build:
+	@echo "creating uploads folder..."
+	@-mkdir uploads 2&> /dev/null
 	@echo "building $(BINARY)..."
 	@$(GO) build -o $(BINARY) $(MAIN_PACKAGE)
 

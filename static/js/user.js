@@ -25,6 +25,7 @@ fileInput.onchange = ({ target }) => {
 function uploadFile(name) {
   let xhr = new XMLHttpRequest();
   xhr.open("POST", "api/v1/uploads/");
+
   xhr.upload.addEventListener("progress", ({ loaded, total }) => {
     const KB = 1 << 10;
     const MB = 1 << 20;
@@ -54,28 +55,34 @@ function uploadFile(name) {
                             </li>`;
     progressArea.innerHTML = progressHTML;
     progressArea.querySelector(".progress").style.width = `${fileLoaded}%`;
-
-    if (loaded === total) {
-      progressArea.innerHTML = "";
-      let uploadedHTML = `<li class="row">
-                                <i class="fas fa-file-alt"></i>
-                                <div class="content">
-                                    <div class="details">
-                                        <span class="name">${name} * Uploaded</span>
-                                        <span class="size">${fileSize}</span>
-                                    </div>
-                                    <div class="progress-bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                </div>
-                                <i class="fas fa-download"></i>
-                            </li>`;
-      uploadedArea.insertAdjacentHTML("afterend", uploadedHTML);
-      uploadedArea.querySelectorAll(".name").forEach((v) =>
-        v.style.color = "#C5D1DE"
-      );
-    }
   });
+
+  // handle server response
+  xhr.onreadystatechange = () => {
+    progressArea.innerHTML = "";
+
+    if (xhr.readyState === 4 && xhr.status === 201) {
+
+      const jsonResponse = JSON.parse(xhr.responseText);
+      let uploadedHTML = `<li class="row">
+                <i class="fas fa-file-alt"></i>
+                <div class="content">
+                    <div class="details">
+                        <span class="name">${jsonResponse.name} * Uploaded</span>
+                        <span class="size">${jsonResponse.size}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                </div>
+                <a href="${jsonResponse.link}"><i class="fas fa-download"></i></a>
+            </li>`;
+      uploadedArea.insertAdjacentHTML("beforeend", uploadedHTML);
+      uploadedArea
+        .querySelectorAll(".name")
+        .forEach((v) => (v.style.color = "#C5D1DE"));
+    }
+  };
 
   let formData = new FormData(form);
   xhr.send(formData);

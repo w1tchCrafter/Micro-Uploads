@@ -8,6 +8,7 @@ import (
 	"micro_uploads/internal/services"
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -26,7 +27,7 @@ func (uc *UploadControllers) StartRoutes() {
 
 	uploads := uc.R.Group("/uploads")
 	{
-		uploads.POST("/", middleware.UpdateStorage(uc.DB), uc.uploadFile)
+		uploads.POST("/", uc.uploadFile)
 		uploads.GET("/:filename", uc.getFile)
 		uploads.DELETE("/:filename", middleware.UpdateStorage(uc.DB), uc.deleteFile)
 	}
@@ -61,9 +62,11 @@ func (uc UploadControllers) uploadFile(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Set("username", username)
-	ctx.Set("datasize", file.Size)
-	ctx.Set("status", http.StatusCreated)
+	ctx.JSON(201, gin.H{
+		"name": dbfile.OriginalName,
+		"link": "/api/v1/uploads/" + strings.Split(dbfile.Filename, "/")[1],
+		"size": dbfile.Size,
+	})
 }
 
 func (uc UploadControllers) getFile(ctx *gin.Context) {
