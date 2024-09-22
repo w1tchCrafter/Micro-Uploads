@@ -29,7 +29,7 @@ func (uc *UploadControllers) StartRoutes() {
 	{
 		uploads.POST("/", uc.uploadFile)
 		uploads.GET("/:filename", uc.getFile)
-		uploads.DELETE("/:filename", middleware.UpdateStorage(uc.DB), uc.deleteFile)
+		uploads.DELETE("/:filename", uc.deleteFile)
 	}
 }
 
@@ -124,7 +124,5 @@ func (uc UploadControllers) deleteFile(ctx *gin.Context) {
 
 	tx.Commit()
 
-	ctx.Set("username", author)
-	ctx.Set("datasize", -file.Size)
-	ctx.Set("status", http.StatusOK)
+	ctx.JSON(http.StatusOK, gin.H{"deletd": "file deleted successfully"})
 }
